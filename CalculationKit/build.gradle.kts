@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("com.google.devtools.ksp")
 }
 
 kotlin {
@@ -17,14 +18,23 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.kotlinx.coroutines.core)
+                api(libs.kotlinx.datetime)
+
+//                implementation(libs.kmm.viewmodel)
+
+                api(libs.bundles.multiplatform.settings)
+            }
+        }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
         val androidMain by getting
-        val androidTest by getting
+//        val androidTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -48,9 +58,13 @@ kotlin {
 
 android {
     namespace = "dev.murmurations.calculator"
-    compileSdk = 33
+    compileSdk = AndroidSdk.compile
     defaultConfig {
-        minSdk = 24
-        targetSdk = 33
+        minSdk = AndroidSdk.min
+//        targetSdk = 33
+    }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
     }
 }
